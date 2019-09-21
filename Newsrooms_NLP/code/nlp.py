@@ -2,6 +2,7 @@ import os
 import sys
 import xlrd
 import docx
+import sqlite3
 # import nltk
 # import sklearn
 
@@ -66,18 +67,27 @@ import docx
 # 	return stemmed
 
 
-# def read_data(data_dir):
-# 	"""
-# 	Preprocesses all of the text documents in a directory.
-# 	Args:
-# 		data_dir: the directory to the data to be processed
-# 	Returns:
-# 		1. A mapping from zero-indexed document IDs to a bag of words
-# 		(mapping from word to the number of times it appears)
-# 		2. A mapping from words to the number of documents it appears in
-# 		3. A mapping from words to unique, zero-indexed integer IDs
-# 		4.  A mapping from document IDs to labels (politics, entertainment, tech, etc)
-# 	"""
+def read_data(data_dir):
+	"""
+	Preprocesses all of the text documents in a directory.
+	Args:
+		data_dir: the directory to the data to be processed
+	Returns:
+		1. A mapping from zero-indexed document IDs to a bag of words
+		(mapping from word to the number of times it appears)
+		2. A mapping from words to the number of documents it appears in
+		3. A mapping from words to unique, zero-indexed integer IDs
+		4.  A mapping from document IDs to labels (politics, entertainment, tech, etc)
+	"""
+	document_titles = os.listdir(data_dir)
+	articles = []
+	for filename in document_titles:
+		doc = docx.Document(data_dir+'/'+filename)
+		fullText = []
+		for para in doc.paragraphs:
+			if len(para.text) != 0:
+				fullText.append(para.text)
+		articles.append('\n'.join(fullText))
 # 	documents = {} # Mapping from document IDs to a bag of words
 # 	document_word_counts = Counter() # Mapping from words to number of documents it appears in
 # 	word_ids = {} # Mapping from words to unique integer IDs
@@ -174,20 +184,20 @@ import docx
 	# 	Returns:
 	# 		The score of the classifier on the test data.
 	# 	"""
-	# 	# TODO: fit the classifier on X_train and y_train
+	# 	# fit the classifier on X_train and y_train
 	# 	# and return the score on X_test and y_test
 	# 	return classifier.fit(X_train, y_train).score(X_test, y_test)
 
 
-	# # TODO: use topics and labels to create X and y
+	# # use topics and labels to create X and y
 	# X = np.array(list(topics.values()))
 	# y = np.array(list(labels.values()))
 
-	# # TODO: use label_encoder to transform y
+	# # use label_encoder to transform y
 	# label_encoder = LabelEncoder()
 	# y = label_encoder.fit_transform(y)
 
-	# # TODO: modify the call to train_test_split to use
+	# # modify the call to train_test_split to use
 	# # 90% of the data for training and 10% for testing.
 	# # Make sure to also shuffle and set a random state of 0!
 	# X_train, X_test, y_train, y_test = train_test_split(
@@ -200,39 +210,40 @@ import docx
 	# )
 
 
-	# # TODO: create a KNeighborsClassifier that uses 3 neighbors to classify
+	# # create a KNeighborsClassifier that uses 3 neighbors to classify
 	# knn = KNeighborsClassifier(n_neighbors=3)
 	# knn_score = classify(knn)
 
-	# # TODO: create a DecisionTreeClassifier with random_state=0
+	# # create a DecisionTreeClassifier with random_state=0
 	# decision_tree = DecisionTreeClassifier(random_state=0)
 	# decision_tree_score = classify(decision_tree)
 
-	# # TODO: create an SVC with random_state=0
+	# # create an SVC with random_state=0
 	# svm = SVC(random_state=0)
 	# svm_score = classify(svm)
 
-	# # TODO: create an MLPClassifier with random_state=0
+	# # create an MLPClassifier with random_state=0
 	# mlp = MLPClassifier(random_state=0)
 	# mlp_score = classify(mlp)
 
 	# return knn_score, decision_tree_score, svm_score, mlp_score
 
 
-# def cluster_documents(topics, num_clusters=4):
-# 	"""
-# 	Clusters documents based on their topics.
-# 	Args:
-# 		document_topics: a dictionary that maps document IDs to topics.
-# 	Returns:
-# 		1. the predicted clusters for each document. This will be a list
-# 		in which the first element is the cluster index for the first document
-# 		and so on.
-# 		2. the centroid for each cluster.
-# 	"""
+def cluster_documents(topics, num_clusters=4):
+	"""
+	Clusters documents based on their topics.
+	Args:
+		document_topics: a dictionary that maps document IDs to topics.
+	Returns:
+		1. the predicted clusters for each document. This will be a list
+		in which the first element is the cluster index for the first document
+		and so on.
+		2. the centroid for each cluster.
+	"""
+	pass
 # 	k_means = KMeans(n_clusters=num_clusters, random_state=0)
 
-# 	# TODO: Use k_means to cluster the documents and return the clusters and centers
+# 	# Use k_means to cluster the documents and return the clusters and centers
 # 	X = np.array(list(topics.values()))
 
 # 	return k_means.fit_predict(X), k_means.cluster_centers_
@@ -263,19 +274,7 @@ def main(data_dir):
 		data_dir: the path to the BBC dataset directory.
 	"""
 	# Read in the data
-	document_titles = os.listdir(data_dir)
-	first_filename = document_titles[0]
-	doc = docx.Document(data_dir+'/'+first_filename)
-	fullText = []
-	i = 0
-	for para in doc.paragraphs:
-		
-		if len(para.text) != 0:
-			print(i)
-			print(para.text)
-			i += 1
-		# fullText.append(para.text)
-	# print('\n'.join(fullText))
+	read_data(data_dir)
 	# documents, document_word_counts, word_ids, labels = read_data(data_dir)
 
 	# # Perform LSA
