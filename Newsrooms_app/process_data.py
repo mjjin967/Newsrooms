@@ -5,7 +5,6 @@ import json
 def return_json():
 	"""
 	"""
-	# data_dir = os.path.join(os.getcwd(), 'articles_db.db')
 	conn = sqlite3.connect('comprehensive_articles_db.db')
 	cur = conn.cursor()
 	categories = dict()
@@ -20,7 +19,7 @@ def return_json():
 			categories[category] = [{'id': str(_id), 'title': str(title), 'publisher': str(publisher),\
 				'url': str(url), 'time_stamp': str(time_stamp), 'content': str(content)}]
 	json_dict = json.dumps(categories)
-	return json_dict
+	print(json_dict)
 
 
 if __name__ == '__main__':
