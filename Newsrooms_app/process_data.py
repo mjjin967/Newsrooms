@@ -17,17 +17,20 @@ def return_json():
 	"""
 	"""
 	# data_dir = os.path.join(os.getcwd(), 'articles_db.db')
-	conn = sqlite3.connect('articles_db.db')
+	conn = sqlite3.connect('comprehensive_articles_db.db')
 	cur = conn.cursor()
 	categories = dict()
-	cur.execute('SELECT id,title,content,category from articles')
+	cur.execute('SELECT * from articles')
 	data = cur.fetchall()
 	for entry in data:
-		cat_num = entry[3]
-		if cat_num in categories.keys():
-			categories[cat_num].append({'id': entry[0], 'title': entry[1], 'content': entry[2]})
+		_id,title,publisher,url,time_stamp,content,category = entry
+		if category in categories.keys():
+			categories[category].append({'id': _id, 'title': title, 'publisher': publisher,\
+				'url': url, 'time_stamp': time_stamp, 'content': content})
 		else:
-			categories[cat_num] = [{'id': entry[0], 'title': entry[1], 'content': entry[2]}]
+			categories[category] = [{'id': _id, 'title': title, 'publisher': publisher,\
+				'url': url, 'time_stamp': time_stamp, 'content': content}]
+	print(categories[4])
 	json_dict = json.dumps(categories)
 	return json_dict
 
