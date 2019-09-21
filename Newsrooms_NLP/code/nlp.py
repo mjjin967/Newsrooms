@@ -57,16 +57,21 @@ def load_labels(data_dir):
 			categories[i] = [tup[0] for tup in data]
 	return categories
 
-def load_articles(data_dir):
+def return_json(data_dir):
 	"""
 	"""
 	conn = sqlite3.connect('articles_db.db')
 	cur = conn.cursor()
 	categories = dict()
-	cur.execute('SELECT title,content from articles')
+	cur.execute('SELECT id,title,content,category from articles')
 	data = cur.fetchall()
-	return data
-
+	for entry in data:
+		cat_num = entry[3]
+		if cat_num in categories.keys():
+			categories[cat_num].append({'id': entry[0], 'title': entry[1], 'content': entry[2]})
+		else:
+			categories[cat_num] = [{'id': entry[0], 'title': entry[1], 'content': entry[2]}]
+	return categories
 
 
 def classify_documents(topics, labels):
@@ -79,8 +84,8 @@ def cluster_documents():
 
 
 def main(data_dir):
-	all_articles = load_articles(data_dir) # list of tuples [title, article]
-	labels = load_labels(data_dir) # hashmap of key: unique doc id, val: title
+	# all_articles = load_articles(data_dir) # list of tuples [title, article]
+	# labels = load_labels(data_dir) # hashmap of key: unique doc id, val: title
 
 
 
