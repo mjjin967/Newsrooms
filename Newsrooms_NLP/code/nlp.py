@@ -4,14 +4,20 @@ import nltk
 
 # Downloads the NLTK stopword corpus if not already downloaded
 try:
+# <<<<<<< master
 	nltk.download('stopwords')
 except Exception as e:
 	print(e)
     #nltk.data.fine('corpora/stopwords')
+# =======
+# 	nltk.data.fine('corpora/stopwords')
+# except LookupError:
+# 	nltk.download('stopwords')
+# >>>>>>> master
 
-# from nltk.corpus import stopwords
-# from nltk.stem import SnowballStemmer
-# from nltk.tokenize import RegexpTokenizer
+from nltk.corpus import stopwords
+from nltk.stem import SnowballStemmer
+from nltk.tokenize import RegexpTokenizer
 
 
 def process_document(text):
@@ -27,17 +33,43 @@ def process_document(text):
 	# Convert words to lower case
 	text = text.lower()
 
+# <<<<<<< master
 	# Tokenize corpus and remove all non-alphabetical characters
 	tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
 	tokens = tokenizer.tokenize(text)
 
 	# Remove stopwords
 	stop_words = nltk.corpus.stopwords.words('english')
+# =======
+# def process_document(text):
+# 	"""
+# 	Processes a text document by coverting all words to lower case,
+# 	tokenizing, removing all non-alphabetical characters,
+# 	and stemming each word.
+# 	Args:
+# 		text: A string of the text of a single document.
+# 	Returns:
+# 		A list of processed words from the document.
+# 	"""
+# 	# Convert words to lower case
+# 	text = text.lower()
+
+# 	# Tokenize corpus and remove all non-alphabetical characters
+# 	tokenizer = RegexpTokenizer(r'\w+')
+# 	tokens = tokenizer.tokenize(text)
+
+# 	# Remove stopwords
+# 	stop_words = stopwords.words('english')
+# >>>>>>> master
 	set_stopwords = set(stop_words)
 	stopwords_removed = [token for token in tokens if not token in set_stopwords]
 
 	# Stem words
+# <<<<<<< master
 	stemmer = nltk.stem.SnowballStemmer('english')
+# =======
+# 	stemmer = SnowballStemmer('english')
+# >>>>>>> master
 	stemmed = [stemmer.stem(word) for word in stopwords_removed]
 
 	# Return list of processed words
@@ -57,16 +89,21 @@ def load_labels(data_dir):
 			categories[i] = [tup[0] for tup in data]
 	return categories
 
-def load_articles(data_dir):
+def return_json(data_dir):
 	"""
 	"""
 	conn = sqlite3.connect('articles_db.db')
 	cur = conn.cursor()
 	categories = dict()
-	cur.execute('SELECT title,content from articles')
+	cur.execute('SELECT id,title,content,category from articles')
 	data = cur.fetchall()
-	return data
-
+	for entry in data:
+		cat_num = entry[3]
+		if cat_num in categories.keys():
+			categories[cat_num].append({'id': entry[0], 'title': entry[1], 'content': entry[2]})
+		else:
+			categories[cat_num] = [{'id': entry[0], 'title': entry[1], 'content': entry[2]}]
+	return categories
 
 
 def classify_documents(topics, labels):
@@ -78,7 +115,7 @@ def cluster_documents():
 
 
 
-# def main(data_dir):
+def main(data_dir):
 # 	corpus = load_articles(data_dir) # list of tuples [title, article]
 # 	labels = load_labels(data_dir) # hashmap of key: unique doc id, val: title
 #     return [corpus, labels]
