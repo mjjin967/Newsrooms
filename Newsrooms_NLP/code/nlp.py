@@ -75,19 +75,18 @@ def process_document(text):
 	# Return list of processed words
 	return stemmed
 
-def load_labels(data_dir):
+def load_articles(data_dir):
 	"""
 	Returns a hashmap key: unique id, val: title
 	"""
-	conn = sqlite3.connect('articles_db.db')
+	conn = sqlite3.connect(data_dir)
 	cur = conn.cursor()
 	categories = dict()
-	for i in range(62):
-		cur.execute('SELECT id from articles where category=' + str(i))
-		data = cur.fetchall()
-		if len(data) != 0:
-			categories[i] = [tup[0] for tup in data]
-	return categories
+	cur.execute('SELECT title,content from articles')
+	data = cur.fetchall()
+	print("length of data is " + str(len(data)))
+	res=[data[i] for i in range(len(data)) if len(data[i]) != 0]
+	return res
 
 def return_json(data_dir):
 	"""
@@ -115,16 +114,17 @@ def cluster_documents():
 
 
 
-def main(data_dir):
-# 	corpus = load_articles(data_dir) # list of tuples [title, article]
-# 	labels = load_labels(data_dir) # hashmap of key: unique doc id, val: title
-#     return [corpus, labels]
+# def main(data_dir):
+# 	pass
+# 	# corpus = load_articles(data_dir) # list of tuples [title, article]
+# # 	labels = load_labels(data_dir) # hashmap of key: unique doc id, val: title
+# #     return [corpus, labels]
 
 
-# Run using 'python nlp.py' or 'python nlp.py <PATH_TO_BBC_DIRECTORY>'
-# to manually specify the path to the data.
-# This may take a little bit of time (~30-60 seconds) to run.
-if __name__ == '__main__':
-	# data_dir = '/course/cs1951a/pub/nlp/bbc/data' if len(sys.argv) == 1 else sys.argv[1]
-	data_dir = os.path.join(os.getcwd(), 'articles_db.db')
-	main(data_dir)
+# # Run using 'python nlp.py' or 'python nlp.py <PATH_TO_BBC_DIRECTORY>'
+# # to manually specify the path to the data.
+# # This may take a little bit of time (~30-60 seconds) to run.
+# if __name__ == '__main__':
+# 	# data_dir = '/course/cs1951a/pub/nlp/bbc/data' if len(sys.argv) == 1 else sys.argv[1]
+# 	data_dir = os.path.join(os.getcwd(), 'articles_db.db')
+# 	main(data_dir)
