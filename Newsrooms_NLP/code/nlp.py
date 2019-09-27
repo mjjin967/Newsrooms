@@ -84,7 +84,6 @@ def load_articles(data_dir):
 	categories = dict()
 	cur.execute('SELECT title,content from articles')
 	data = cur.fetchall()
-	print("length of data is " + str(len(data)))
 	res=[data[i] for i in range(len(data)) if len(data[i]) != 0]
 	return res
 
