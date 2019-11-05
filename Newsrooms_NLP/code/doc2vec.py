@@ -15,6 +15,9 @@ def read_corpus(tokens_only=False):
     for i, text in enumerate(data):
         # print(text[1])
         line = text[1].encode()
+        # if len(line) != len(text[1]):
+        # 	print(i)
+        # 	print(line)
         if tokens_only:
             yield gensim.utils.simple_preprocess(line)
         else:
@@ -44,11 +47,11 @@ for doc_id in range(len(train_corpus)): # for each document in training corpus
     rank_list = [docid for docid, sim in sims]
     try:
         rank = rank_list.index(doc_id)
-        if rank != 0:
-        	print("Original article is: ")
-        	print('Document ({}): <<{}>>\n'.format(doc_id, ' '.join(train_corpus[doc_id].words)))
-        	print("Article detected as most similar: ")
-        	print('Document ({}): <<{}>>\n'.format(doc_id, ' '.join(train_corpus[0].words)))
+        # if rank != 0:
+        	# print("Original article is: ")
+        	# print('Document ({}): <<{}>>\n'.format(doc_id, ' '.join(train_corpus[doc_id].words)))
+        	# print("Article detected as most similar: ")
+        	# print('Document ({}): <<{}>>\n'.format(doc_id, ' '.join(train_corpus[0].words)))
         ranks.append(rank)
     except ValueError:
         print(doc_id)
