@@ -37,6 +37,8 @@ model.train(train_corpus, total_examples=model.corpus_count, epochs=model.epochs
 ranks = []
 second_ranks = []
 for doc_id in range(len(train_corpus)): # for each document in training corpus
+    if len(train_corpus[doc_id].words) < 1:
+        continue
     inferred_vector = model.infer_vector(train_corpus[doc_id].words)
     sims = model.docvecs.most_similar([inferred_vector], topn=len(model.docvecs))
     rank_list = [docid for docid, sim in sims]
@@ -44,9 +46,9 @@ for doc_id in range(len(train_corpus)): # for each document in training corpus
         rank = rank_list.index(doc_id)
         if rank != 0:
         	print("Original article is: ")
-        	print('Document ({}): «{}»\n'.format(doc_id, ' '.join(train_corpus[doc_id].words)))
+        	print('Document ({}): <<{}>>\n'.format(doc_id, ' '.join(train_corpus[doc_id].words)))
         	print("Article detected as most similar: ")
-        	print('Document ({}): «{}»\n'.format(doc_id, ' '.join(train_corpus[0].words)))
+        	print('Document ({}): <<{}>>\n'.format(doc_id, ' '.join(train_corpus[0].words)))
         ranks.append(rank)
     except ValueError:
         print(doc_id)
