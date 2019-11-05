@@ -47,6 +47,7 @@ for doc_id in range(len(train_corpus)): # for each document in training corpus
     rank_list = [docid for docid, sim in sims]
     try:
         rank = rank_list.index(doc_id)
+        # Debugging purposes
         # if rank != 0:
         	# print("Original article is: ")
         	# print('Document ({}): <<{}>>\n'.format(doc_id, ' '.join(train_corpus[doc_id].words)))
