@@ -5,9 +5,7 @@ import smart_open
 import random
 import sqlite3
 
-# test_data_dir = '{}'.format(os.sep).join([gensim.__path__[0], 'test', 'test_data'])
-# lee_train_file = test_data_dir + os.sep + 'lee_background.cor'
-# lee_test_file = test_data_dir + os.sep + 'lee.cor'
+
 
 def read_corpus(tokens_only=False):
     conn = sqlite3.connect('articles_db.db')
@@ -38,12 +36,17 @@ model.train(train_corpus, total_examples=model.corpus_count, epochs=model.epochs
 # assess the model
 ranks = []
 second_ranks = []
-for doc_id in range(len(train_corpus)):
+for doc_id in range(len(train_corpus)): # for each document in training corpus
     inferred_vector = model.infer_vector(train_corpus[doc_id].words)
     sims = model.docvecs.most_similar([inferred_vector], topn=len(model.docvecs))
     rank_list = [docid for docid, sim in sims]
     try:
         rank = rank_list.index(doc_id)
+        if rank != 0:
+        	print("Original article is: ")
+        	print('Document ({}): «{}»\n'.format(doc_id, ' '.join(train_corpus[doc_id].words)))
+        	print("Article detected as most similar: ")
+        	print('Document ({}): «{}»\n'.format(doc_id, ' '.join(train_corpus[0].words)))
         ranks.append(rank)
     except ValueError:
         print(doc_id)
@@ -52,7 +55,7 @@ for doc_id in range(len(train_corpus)):
 
 print(collections.Counter(ranks))
 
-print('Document ({}): «{}»\n'.format(doc_id, ' '.join(train_corpus[doc_id].words)))
-print(u'SIMILAR/DISSIMILAR DOCS PER MODEL %s:\n' % model)
-for label, index in [('MOST', 0), ('SECOND-MOST', 1), ('MEDIAN', len(sims)//2), ('LEAST', len(sims) - 1)]:
-    print(u'%s %s: «%s»\n' % (label, sims[index], ' '.join(train_corpus[sims[index][0]].words)))
+# print('Document ({}): «{}»\n'.format(doc_id, ' '.join(train_corpus[doc_id].words)))
+# print(u'SIMILAR/DISSIMILAR DOCS PER MODEL %s:\n' % model)
+# for label, index in [('MOST', 0), ('SECOND-MOST', 1), ('MEDIAN', len(sims)//2), ('LEAST', len(sims) - 1)]:
+#     print(u'%s %s: «%s»\n' % (label, sims[index], ' '.join(train_corpus[sims[index][0]].words)))
