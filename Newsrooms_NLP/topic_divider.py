@@ -6,6 +6,9 @@ from sklearn.model_selection import train_test_split
 from sklearn import preprocessing, linear_model, naive_bayes, metrics
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn import ensemble
+from sklearn.metrics import classification_report
+from sklearn.metrics import precision_recall_fscore_support as score
+
 
 # import warnings filter
 from warnings import simplefilter
@@ -48,7 +51,7 @@ def store_data(data_dir, sql_dir):
 	conn.close()
 	print("Data successfully stored in sql database.")
 
-def dataset_divider(sql_dir, vectorizer):
+def dataset_divider(sql_dir, vectorizer, need_encoder = False):
 	# print("Dividing the dataset...")
 	conn = sqlite3.connect(sql_dir)
 	cur = conn.cursor()
@@ -69,6 +72,8 @@ def dataset_divider(sql_dir, vectorizer):
 	encoder = preprocessing.LabelEncoder()
 	y_train = encoder.fit_transform(y_train_str)
 	y_test = encoder.fit_transform(y_test_str)
+	if need_encoder:
+		return encoder, X_train, X_test, y_train, y_test
 	return X_train, X_test, y_train, y_test
 
 
@@ -183,6 +188,19 @@ def train_and_test_unbalanced(sql_dir):
 	rf_tfidf, accuracy = train_model(ensemble.RandomForestClassifier(class_weight='balanced'), X_train_tfidf, y_train, X_test_tfidf, y_test)
 	print("RF, TF-IDF Vectors: ", accuracy)
 
+def classification_report(sql_dir):
+	vectorizer = CountVectorizer(encoding='latin-1')
+	encoder, X_train, X_test, y_train, y_test = dataset_divider(sql_dir, vectorizer, need_encoder = True)
+	best_model, accuracy = train_model(naive_bayes.ComplementNB(), X_train, y_train, X_test, y_test)
+	y_pred = best_model.predict(X_test)
+
+	precision,recall,fscore,support=score(y_test,y_pred,average='macro')
+	print('Precision : {}'.format(precision))
+	print('Recall    : {}'.format(recall))
+	print('F-score   : {}'.format(fscore))
+	# print('Support   : {}'.format(support))
+	# print(classification_report(y_test,y_pred,target_names = encoder.classes_))
+
 def main():
 	curr_dir = getcwd()
 	data_directory = join(curr_dir, 'bbcsport')
@@ -190,7 +208,8 @@ def main():
 	# store_data(data_directory, sql_directory)
 	# divide_dataset(sql_directory)
 	# train_and_test_balanced(sql_directory)
-	train_and_test_unbalanced(sql_directory)
+	# train_and_test_unbalanced(sql_directory)
+	classification_report(sql_directory)
 
 if __name__ == '__main__':
 	main()
