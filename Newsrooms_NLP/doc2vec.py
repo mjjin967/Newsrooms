@@ -8,7 +8,7 @@ import sqlite3
 
 
 def read_corpus(tokens_only=False):
-    conn = sqlite3.connect('articles_db.db')
+    conn = sqlite3.connect('brexit_articles_db.db')
     cur = conn.cursor()
     cur.execute('SELECT category,content from articles')
     data = cur.fetchall()
