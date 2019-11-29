@@ -106,7 +106,7 @@ def kmeans_clustering(X,k):
 	model = KMeans(n_clusters=k).fit(X)
 	pkl_filename = "pickle_model.pkl"
 	with open(pkl_filename, 'wb') as file:
-	    pickle.dump(model, file)
+		pickle.dump(model, file)
 	# return model.cluster_centers_, model.predict(X), model.labels_
 
 def retrieve_data():
@@ -157,11 +157,12 @@ def load_and_cluster():
 	print(type(np_array[0]))
 	print(np.unique([len(row) for row in np_array]))
 	kmeans_clustering(np_array,1000)
+	numeric_labels = []
 	with open("pickle_model.pkl", 'rb') as file:
-    	kmeans_model = pickle.load(file)
-    cluster_centers = kmeans_model.cluster_centers_
-    numeric_labels = kmeans_model.labels_
-    #, model.predict(X), model.labels_
+		kmeans_model = pickle.load(file)
+		cluster_centers = kmeans_model.cluster_centers_
+		numeric_labels = kmeans_model.labels_
+	#, model.predict(X), model.labels_
 	print(np.unique(numeric_labels))
 	for i in range(1000):
 		if i % 100 == 0:
